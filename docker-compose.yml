@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - mysql:/var/lib/mysql
+      
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    depends_on:
+      - db
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:8080"
+    depends_on:
+      - node
+
+volumes:
+  mysql:
